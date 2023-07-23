@@ -5,3 +5,7 @@ env/
 /backend/__pycache__/
 /backend/api/__pycache__
 /backend/api/__pycache__/
+/backend/api/.env
+
+backend/api/routes/__pycache__/
+backend/api/routes/admin/__pycache__

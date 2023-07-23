@@ -11,13 +11,14 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from celery import Celery
-# from werkzeug.middleware.proxy_fix import ProxyFix
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 
 
 # app modules import
 from .models.models import db
 from .utils.mail import mail
+from .routes.routes import rest_api
 
 # dictConfig({
 #     'version': 1,
@@ -37,7 +38,7 @@ from .utils.mail import mail
 
 app = Flask(__name__)
 
-# app.wsgi_app = ProxyFix(app.wsgi_app)
+app.wsgi_app = ProxyFix(app.wsgi_app)
 
 app.config.from_object('api.config.BaseConfig')    
 
@@ -72,8 +73,6 @@ def make_celery(app):
 
 celery = make_celery(app)
 
-fh = logging.FileHandler("v1.log")
-
 mail_handler = SMTPHandler(
     mailhost='127.0.0.1',
     fromaddr='server-error@example.com',
@@ -88,6 +87,7 @@ if not app.debug:
     app.logger.addHandler(mail_handler)
 
 # add routes endpoints here
+rest_api.init_app(app)
 
 # db setup
 @app.before_request
