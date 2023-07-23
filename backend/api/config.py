@@ -9,6 +9,7 @@ UPLOAD_FOLDER = BASE_DIR+'/static/uploads'
 class BaseConfig():
     '''Carries our basic configuration of the platform'''
 
+    TESTING = False
     SQLALCHEMY_DATABASE_URI: str = 'sqlite:///' + os.path.join(BASE_DIR, 'apidata.db')
     # SQLALCHEMY_DATABASE_URI = 'postgresql://username:password@host:port/databse_name' #For production environment ~ replace postgresql with mysql if u want 
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = False

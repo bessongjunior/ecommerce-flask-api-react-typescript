@@ -1,5 +1,7 @@
 
 
+
+
 import os
 from datetime import datetime, timezone, timedelta
 
@@ -12,13 +14,13 @@ from flask_restx import Namespace, Resource, fields
 from werkzeug.utils import secure_filename
 
 
-admin_ns = Namespace('admin', description='Admin related operations')
+user_ns = Namespace('user', description='User related operations')
 
 
 # configure a file handler for admin namespace only
-admin_ns.logger.setLevel(logging.INFO)
+user_ns.logger.setLevel(logging.INFO)
 fh = logging.FileHandler("v1.log")
-admin_ns.logger.addHandler(fh)
+user_ns.logger.addHandler(fh)
 
 
 
@@ -26,7 +28,7 @@ admin_ns.logger.addHandler(fh)
 
 
 
-allowed_extensions = set(['image/jpeg', 'image/png', 'jpeg', 'gif'])
+allowed_extensions = set(['png', 'jpg' 'jpeg', 'gif'])
 
 """Helper function for JWT token required"""
 
@@ -40,12 +42,13 @@ def allowed_file(filename):
 ''' Routes '''
 
 
-@admin_ns.route('/test')
+@user_ns.route('/test')
 class SampleTest(Resource):
     '''Sample test resource routing'''
 
+    # @user_ns.doc()
     def get(self):
-        admin_ns.logger.info("hello from tdd case setup")
-        return {"key":"value"}, 200
+        user_ns.logger.info("hello from tdd case setup user")
+        return {"message":"hello"}, 200
 
 

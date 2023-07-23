@@ -20,6 +20,7 @@ from .models.models import db
 from .utils.mail import mail
 from .routes.routes import rest_api
 
+# add for production usecase
 # dictConfig({
 #     'version': 1,
 #     'formatters': {'default': {

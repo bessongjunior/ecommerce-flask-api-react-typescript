@@ -1,5 +1,8 @@
 
 
+
+
+
 import os
 from datetime import datetime, timezone, timedelta
 
@@ -12,13 +15,13 @@ from flask_restx import Namespace, Resource, fields
 from werkzeug.utils import secure_filename
 
 
-admin_ns = Namespace('admin', description='Admin related operations')
+product_ns = Namespace('product', description='Product operations')
 
 
 # configure a file handler for admin namespace only
-admin_ns.logger.setLevel(logging.INFO)
+product_ns.logger.setLevel(logging.INFO)
 fh = logging.FileHandler("v1.log")
-admin_ns.logger.addHandler(fh)
+product_ns.logger.addHandler(fh)
 
 
 
@@ -40,12 +43,12 @@ def allowed_file(filename):
 ''' Routes '''
 
 
-@admin_ns.route('/test')
+@product_ns.route('/test')
 class SampleTest(Resource):
     '''Sample test resource routing'''
 
-    def get(self):
-        admin_ns.logger.info("hello from tdd case setup")
-        return {"key":"value"}, 200
+    async def get(self):
+        product_ns.logger.info("hello from tdd case setup product")
+        return {"message":"greetings"}, 200
 
 
