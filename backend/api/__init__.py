@@ -2,24 +2,42 @@
 
 import json
 import time
+import logging
+# from logging.config import dictConfig
+from logging.handlers import SMTPHandler
 
 from flask import Flask, Response
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from celery import Celery
-from werkzeug.middleware.proxy_fix import ProxyFix
+# from werkzeug.middleware.proxy_fix import ProxyFix
 
 
 
 # app modules import
 from .models.models import db
-from utils.mail import mail
+from .utils.mail import mail
 
+# dictConfig({
+#     'version': 1,
+#     'formatters': {'default': {
+#         'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
+#     }},
+#     'handlers': {'wsgi': {
+#         'class': 'logging.StreamHandler',
+#         'stream': 'ext://flask.logging.wsgi_errors_stream',
+#         'formatter': 'default'
+#     }},
+#     'root': {
+#         'level': 'INFO',
+#         'handlers': ['wsgi']
+#     }
+# })
 
 app = Flask(__name__)
 
-app.wsgi_app = ProxyFix(app.wsgi_app)
+# app.wsgi_app = ProxyFix(app.wsgi_app)
 
 app.config.from_object('api.config.BaseConfig')    
 
@@ -53,6 +71,21 @@ def make_celery(app):
     return celery
 
 celery = make_celery(app)
+
+fh = logging.FileHandler("v1.log")
+
+mail_handler = SMTPHandler(
+    mailhost='127.0.0.1',
+    fromaddr='server-error@example.com',
+    toaddrs=['admin@example.com'],
+    subject='Application Error'
+    )
+mail_handler.setLevel(logging.ERROR)
+mail_handler.setFormatter(logging.Formatter(
+'[%(asctime)s] %(levelname)s in %(module)s: %(message)s'
+))
+if not app.debug:
+    app.logger.addHandler(mail_handler)
 
 # add routes endpoints here
 
