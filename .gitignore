@@ -12,4 +12,7 @@ backend/api/routes/admin/__pycache__/
 backend/api/routes/user/__pycache__/
 backend/api/routes/product/__pycache__/
 backend/api/routes/cart/__pycache__/
+backend/api/routes/products/__pycache__/
+backend/api/routes/brand/__pycache__/
+backend/api/routes/category/__pycache__/
 backend/api/models/__pycache__/
