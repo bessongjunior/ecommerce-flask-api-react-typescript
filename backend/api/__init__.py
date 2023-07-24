@@ -17,7 +17,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 
 
 # app modules import
-from .models.models import db
+from .models.models import db   #, bcrypt
 from .utils.mail import mail
 from .routes.routes import rest_api
 
@@ -45,6 +45,8 @@ app.wsgi_app = ProxyFix(app.wsgi_app)
 app.config.from_object('api.config.BaseConfig')    
 
 db.init_app(app)
+
+# bcrypt.init_app(app)
 
 mail.init_app(app)
 

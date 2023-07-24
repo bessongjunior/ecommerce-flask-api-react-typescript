@@ -1,29 +1,34 @@
 
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
+# from flask_bcrypt import Bcrypt
+from werkzeug.security import generate_password_hash, check_password_hash # could be replace with generate password hash.
 
 
 db = SQLAlchemy()
+# bcrypt = Bcrypt()
 
 
 
 class Admin(db.Model):
     '''This represent our admin table in db'''
+
     id: int = db.Column(db.Integer, primary_key=True)
     first_name: str = db.Column(db.String, nullable=False)
     last_name: str = db.Column(db.String, nullable=False)
     username: str = db.Column(db.String, nullable=False, unique=True)
     email: str = db.Column(db.String, nullable=False, unique=True)
     password: str = db.Column(db.String, nullable=True, unique=False)
+    jwt_auth_active = db.Column(db.Boolean())
     date_joined: datetime = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    date_modified: datetime = db.Column(db.DateTime, nullable=True)
+    date_modified: datetime = db.Column(db.DateTime, onupdate=datetime.utcnow)
     # image_file: str = db.Column(db.String, nullable=True, default='avatar.jpg')
     profile = db.Column(db.String, unique=False, nullable=False, default='profile.jpg')
     jwt_auth_active = db.Column(db.Boolean())
     is_admin = db.Column(db.Boolean(), default=True)
 
-    def __init__(self):
-        pass
+    # def __init__(self):
+    #     pass
 
     def __repr__(self):
         return f"Admin {self.username}"
@@ -31,6 +36,39 @@ class Admin(db.Model):
     def save(self):
         db.session.add(self)
         db.session.commit()
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
+    
+    def check_jwt_auth_active(self):
+        return self.jwt_auth_active
+
+    def set_jwt_auth_active(self, set_status):
+        self.jwt_auth_active = set_status
+
+    @classmethod
+    def find_by_email(cls, email):
+        return cls.query.filter_by(email=email).first()
+    
+    @classmethod
+    def find_by_id(cls, id):
+        return cls.query.filter_by(id=id).first()
+
+    def toDICT(self):
+
+        cls_dict = {}
+        cls_dict['_id'] = self.id
+        cls_dict['fullname'] = self.fullname
+        cls_dict['email'] = self.email
+
+        return cls_dict
+
+    def toJSON(self):
+
+        return self.toDICT()
 
     
 
