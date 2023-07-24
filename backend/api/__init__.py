@@ -6,7 +6,7 @@ import logging
 # from logging.config import dictConfig
 from logging.handlers import SMTPHandler
 
-from asgiref.wsgi import WsgiToAsgi
+from asgiref.wsgi import WsgiToAsgi #ASGI / Async Support
 from flask import Flask, Response
 from flask_cors import CORS
 from flask_migrate import Migrate
