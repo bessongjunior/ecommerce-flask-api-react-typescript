@@ -35,6 +35,11 @@ admin_login_model = admin_ns.model('LoginModel', {
     "password": fields.String()
 })
 
+admin_edit_model = admin_ns.model('EditModel', {
+    "username": fields.String(),
+    "email": fields.String()
+})
+
 allowed_extensions = set(['jpg', 'png', 'jpeg', 'gif'])
 
 """Helper function for JWT token required"""
@@ -152,14 +157,26 @@ class LogoutAdmin(Resource):
         pass
 
 
-@admin_ns.route('v1/<admin_id>/edit')
+@admin_ns.route('v1/<int:admin_id>/edit')
 class EditAdminDetails(Resource):
     ''' Logout resource route'''
 
+    @admin_ns.expect(admin_edit_model)
     def patch(self, admin_id):
         '''Admin Logout endpoint'''
 
-        pass
+        req_data = request.get_json()
+
+        _new_username = req_data.get("username")
+        _new_email = req_data.get("email")
+
+        admin_updates = Admin.query.filter_by(id=int(admin_id)).first()
+        admin_updates.usename = _new_username
+        admin_updates.email = _new_email
+
+        db.session.commit()
+
+        return {"success": True, "msg": "username and email successfully updated."}, HTTPStatus.ACCEPTED
 
 
 @admin_ns.route('v1/<admin_id>/profile_picture')
