@@ -24,7 +24,7 @@ class Admin(db.Model):
     date_modified: datetime = db.Column(db.DateTime, onupdate=datetime.utcnow)
     # image_file: str = db.Column(db.String, nullable=True, default='avatar.jpg')
     profile = db.Column(db.String, unique=False, nullable=False, default='profile.jpg')
-    jwt_auth_active = db.Column(db.Boolean())
+    # jwt_auth_active = db.Column(db.Boolean())
     is_admin = db.Column(db.Boolean(), default=True)
 
     # def __init__(self):
@@ -61,8 +61,9 @@ class Admin(db.Model):
 
         cls_dict = {}
         cls_dict['_id'] = self.id
-        cls_dict['fullname'] = self.fullname
+        cls_dict['username'] = self.username
         cls_dict['email'] = self.email
+        cls_dict['is_admin'] = self.is_admin
 
         return cls_dict
 

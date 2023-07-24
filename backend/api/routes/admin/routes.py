@@ -30,6 +30,11 @@ admin_reg_model = admin_ns.model('RegistrationModel', {
     "password": fields.String(),
 })
 
+admin_login_model = admin_ns.model('LoginModel', {
+    "email": fields.String(),
+    "password": fields.String()
+})
+
 allowed_extensions = set(['jpg', 'png', 'jpeg', 'gif'])
 
 """Helper function for JWT token required"""
@@ -98,14 +103,43 @@ class RegisterAdmin(Resource):
          
 
 
-@admin_ns.route('v1/login')
+@admin_ns.route('/v1/login')
 class LoginAdmin(Resource):
     ''' Login resource route'''
 
-    async def post(self):
+    @admin_ns.expect(admin_login_model)
+    def post(self):
         '''Admin Login endpoint'''
 
-        pass
+        req_data = request.get_json()
+
+        _email = req_data.get("email")
+        _password = req_data.get("password")
+
+        admin_exists = Admin.find_by_email(_email)
+
+        print(admin_exists)
+
+        if not admin_exists:
+            admin_ns.logger.info(f"Administrator donot exist, the email '{_email}' was use, attempting to login on an admin account")
+            return {"success": False,
+                    "msg": "This email does not exist."}, HTTPStatus.NOT_FOUND
+
+        if not admin_exists.check_password(_password):
+            admin_ns.logger.info(f"Administrator exist, the admin with email '{_email}' was use, password did not match")
+            return {"success": False,
+                    "msg": "Wrong credentials."}, HTTPStatus.NOT_FOUND
+
+        # # create access token uwing JWT
+        # # token = jwt.encode({'email': _email, 'exp': datetime.utcnow() + timedelta(minutes=30)}, BaseConfig.SECRET_KEY)
+
+        admin_exists.set_jwt_auth_active(True)
+        admin_exists.save()
+
+        return {"success": True,
+                # "token": token,
+                "user": admin_exists.toJSON()
+                }, HTTPStatus.OK
 
 
 @admin_ns.route('v1/logout')
