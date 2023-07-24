@@ -6,6 +6,7 @@ import logging
 # from logging.config import dictConfig
 from logging.handlers import SMTPHandler
 
+from asgiref.wsgi import WsgiToAsgi
 from flask import Flask, Response
 from flask_cors import CORS
 from flask_migrate import Migrate
@@ -113,3 +114,4 @@ def after_request(response) -> Response:
         response.headers.add('Content-Type', 'application/json')
     return response
 
+asgi_app = WsgiToAsgi(app)

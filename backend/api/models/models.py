@@ -89,18 +89,7 @@ class Product(db.Model):
     full_description: str = db.Column(db.Text, nullable=True)
     img_main: str   = db.Column(db.String(150), nullable=False, default='main.jpg')
     # slug: str   = 
-    # currency: str = 
-
-    def __init__(self):
-        pass
-
-    def __repr__(self):
-        return f"Product {self.name}"
-
-    def save(self):
-        db.session.add(self)
-        db.session.commit()
-    
+    # currency: str =     
 
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'),nullable=False)
     category = db.relationship('Category',backref=db.backref('categories', lazy=True))
@@ -114,23 +103,76 @@ class Product(db.Model):
     # product cat
     # product brand
 
+    # def __init__(self):
+    #     pass
+
+    def __repr__(self):
+        return f"Product {self.name}"
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
     
 
 class Brand(db.Model):
     '''This represents our brand in db'''
-    id: int = db.Column(db.Integer, primary_key=True)
-    name: str = db.Column(db.String, nullable=False, unique=True)
+
+    id: int = db.Column(db.Integer(), primary_key=True)
+    name: str = db.Column(db.String(20), nullable=False, unique=True)
+    date_created: datetime = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    updated = db.Column(db.DateTime, onupdate=datetime.utcnow)
+
+    # def __init__(self):
+    #     pass
+
+    def __repr__(self):
+        return f"Brand {self.name}"
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @classmethod
+    def get_by_name(cls, name):
+        return cls.query.filter_by(name=name).first()
+
+    @classmethod
+    def get_by_id(cls, id):
+        return cls.query.filter_by(id=id).first()
     
 
 
 class Category(db.Model):
     '''This represents our category table in db'''
+
     id: int = db.Column(db.Integer, primary_key=True)
     name: str = db.Column(db.String, nullable=False, unique=True)
+    date_created: datetime = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    updated = db.Column(db.DateTime, onupdate=datetime.utcnow)
+
+    # def __init__(self):
+    #     pass
+
+    def __repr__(self):
+        return f"category {self.name}"
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @classmethod
+    def get_by_name(cls, name):
+        return cls.query.filter_by(name=name).first()
+
+    @classmethod
+    def get_by_id(cls, id):
+        return cls.query.filter_by(id=id).first()
     
 
 class Cart(db.Model):
     '''this represent our cart table in db'''
+
     id: int = db.Column(db.Integer, primary_key=True)
     
 
