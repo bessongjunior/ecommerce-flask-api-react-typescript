@@ -21,7 +21,7 @@ fh = logging.FileHandler("v1.log")
 admin_ns.logger.addHandler(fh)
 
 
-allowed_extensions = set(['image/jpeg', 'image/png', 'jpeg', 'gif'])
+allowed_extensions = set(['jpg', 'png', 'jpeg', 'gif'])
 
 """Helper function for JWT token required"""
 
@@ -39,7 +39,7 @@ def allowed_file(filename):
 class SampleTest(Resource):
     '''Sample test resource routing'''
 
-    def get(self):
+    async def get(self):
         admin_ns.logger.info("hello from tdd case setup")
         return {"key":"value"}, 200
     
@@ -49,7 +49,7 @@ class SampleTest(Resource):
 class RegisterAdmin(Resource):
     ''' Registration resource route'''
 
-    def post(self):
+    async def post(self):
         '''Admin registration endpoint'''
 
         pass
@@ -59,7 +59,7 @@ class RegisterAdmin(Resource):
 class LoginAdmin(Resource):
     ''' Login resource route'''
 
-    def post(self):
+    async def post(self):
         '''Admin Login endpoint'''
 
         pass
