@@ -90,6 +90,8 @@ if not app.debug:
 # add routes endpoints here
 rest_api.init_app(app)
 
+
+
 # db setup
 @app.before_request
 def initialize_database() -> None:
@@ -110,3 +112,4 @@ def after_request(response) -> Response:
             response.set_data(json.dumps(response_data))
         response.headers.add('Content-Type', 'application/json')
     return response
+

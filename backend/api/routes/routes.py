@@ -1,16 +1,17 @@
 
-import logging
+# import logging
 
 
 # Register all routes endpointts and versions!
-from flask_restx import Api, Resource
+from flask_restx import Api
+# from flask import #url_for, current_app, json
 
 # configure root logger
-logging.basicConfig(level=logging.INFO)
+# logging.basicConfig(level=logging.INFO)
 
 
 from .admin.routes import admin_ns as admin_api
-from .user.routes import user_ns as user_api
+from .customer.routes import user_ns as user_api
 from .products.routes import product_ns as product_api
 
 

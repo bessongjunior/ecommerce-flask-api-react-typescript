@@ -17,6 +17,7 @@ class BaseConfig():
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
     SECURITY_PASSWORD_SALT= os.environ.get('SECURITY_PASSWORD_SALT')
+    SWAGGER_VALIDATOR_URL = 'http://localhost:5000/doc'#'http://domain.com/validator'
 
     MAIL_PORT: int = 587
     MAIL_USE_TLS: bool = False

@@ -21,11 +21,6 @@ fh = logging.FileHandler("v1.log")
 admin_ns.logger.addHandler(fh)
 
 
-
-
-
-
-
 allowed_extensions = set(['image/jpeg', 'image/png', 'jpeg', 'gif'])
 
 """Helper function for JWT token required"""
@@ -47,5 +42,57 @@ class SampleTest(Resource):
     def get(self):
         admin_ns.logger.info("hello from tdd case setup")
         return {"key":"value"}, 200
+    
+
+
+@admin_ns.route('v1/register')
+class RegisterAdmin(Resource):
+    ''' Registration resource route'''
+
+    def post(self):
+        '''Admin registration endpoint'''
+
+        pass
+
+
+@admin_ns.route('v1/login')
+class LoginAdmin(Resource):
+    ''' Login resource route'''
+
+    def post(self):
+        '''Admin Login endpoint'''
+
+        pass
+
+
+@admin_ns.route('v1/logout')
+class LogoutAdmin(Resource):
+    ''' Logout resource route'''
+
+    def post(self):
+        '''Admin Logout endpoint'''
+
+        pass
+
+
+@admin_ns.route('v1/<admin_id>/edit')
+class EditAdminDetails(Resource):
+    ''' Logout resource route'''
+
+    def patch(self, admin_id):
+        '''Admin Logout endpoint'''
+
+        pass
+
+
+@admin_ns.route('v1/<admin_id>/profile_picture')
+class UpdateAdminProfilePhoto(Resource):
+    ''' Logout resource route'''
+
+    def put(self, admin_id):
+        '''Admin Logout endpoint'''
+
+        pass
+
 
 
