@@ -7,7 +7,7 @@ from functools import wraps
 from http import HTTPStatus
 import logging
 
-from flask import request, send_file, send_from_directory, url_for, current_app, render_template
+from flask import request, url_for, current_app #, render_template, send_file, send_from_directory, 
 from flask_restx import Namespace, Resource, fields, reqparse
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import FileStorage
