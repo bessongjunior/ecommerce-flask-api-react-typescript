@@ -23,9 +23,8 @@ class Admin(db.Model):
     date_joined: datetime = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     date_modified: datetime = db.Column(db.DateTime, onupdate=datetime.utcnow)
     # image_file: str = db.Column(db.String, nullable=True, default='avatar.jpg')
-    profile = db.Column(db.String, unique=False, nullable=False, default='profile.jpg')
-    # jwt_auth_active = db.Column(db.Boolean())
-    is_admin = db.Column(db.Boolean(), default=True)
+    profile: str = db.Column(db.String, unique=False, nullable=False, default='profile.jpg')
+    is_admin: bool = db.Column(db.Boolean(), default=True)
 
     # def __init__(self):
     #     pass
@@ -220,7 +219,3 @@ class NewsLetter(db.Model):
     id: int = db.Column(db.Integer, primary_key=True)
     email: str = db.Column(db.String, nullable=False, unique=False)
     
-
-
-
-
