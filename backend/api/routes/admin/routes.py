@@ -7,11 +7,13 @@ from functools import wraps
 from http import HTTPStatus
 import logging
 
-from flask import request, url_for, current_app, render_template
-from flask_restx import Namespace, Resource, fields
+from flask import request, send_file, send_from_directory, url_for, current_app, render_template
+from flask_restx import Namespace, Resource, fields, reqparse
 from werkzeug.utils import secure_filename
+from werkzeug.datastructures import FileStorage
 
 from ...models.models import db, Admin
+from ...config import BASE_DIR
 
 
 admin_ns = Namespace('admin', description='Admin related operations')
@@ -40,6 +42,16 @@ admin_edit_model = admin_ns.model('EditModel', {
     "email": fields.String()
 })
 
+
+parser = reqparse.RequestParser()
+upload_parser = admin_ns.parser()
+upload_parser.add_argument('profile_picture', 
+                           location='files', 
+                           type = FileStorage, 
+                           required=True, 
+                        #    action='append'
+                        )
+
 allowed_extensions = set(['jpg', 'png', 'jpeg', 'gif'])
 
 """Helper function for JWT token required"""
@@ -52,16 +64,6 @@ def allowed_file(filename):
 
 
 ''' Routes '''
-
-
-@admin_ns.route('/test')
-class SampleTest(Resource):
-    '''Sample test resource routing'''
-
-    async def get(self):
-        admin_ns.logger.info("hello from tdd case setup")
-        return {"key":"value"}, 200
-    
 
 
 @admin_ns.route('/v1/register')
@@ -147,17 +149,25 @@ class LoginAdmin(Resource):
                 }, HTTPStatus.OK
 
 
-@admin_ns.route('v1/logout')
+@admin_ns.route('/v1/<int:admin_id>/logout')
 class LogoutAdmin(Resource):
     ''' Logout resource route'''
 
-    def post(self):
+    def post(self, admin_id):
         '''Admin Logout endpoint'''
 
-        pass
+        # _JWT_token = request.headers.get('Authorization')
+        # _jwt_token = request.headers["authorization"]
+
+        admin_check = Admin.find_by_id(admin_id)
+        print(admin_check)
+        admin_check.set_jwt_auth_active(False)
+        admin_check.save()
+
+        return {"success": True, "msg": "successfully logged out!"}, HTTPStatus.OK
 
 
-@admin_ns.route('v1/<int:admin_id>/edit')
+@admin_ns.route('/v1/<int:admin_id>/edit')
 class EditAdminDetails(Resource):
     ''' Logout resource route'''
 
@@ -178,15 +188,63 @@ class EditAdminDetails(Resource):
 
         return {"success": True, "msg": "username and email successfully updated."}, HTTPStatus.ACCEPTED
 
-
-@admin_ns.route('v1/<admin_id>/profile_picture')
-class UpdateAdminProfilePhoto(Resource):
-    ''' Logout resource route'''
-
+    @admin_ns.expect(upload_parser)
     def put(self, admin_id):
-        '''Admin Logout endpoint'''
+        '''Admin profile picture upload endpoint'''
 
-        pass
+        args = upload_parser.parse_args()
+        file = args['profile_picture']
+
+        admin_updates = Admin.query.filter_by(id=int(admin_id)).first()
+
+        if file is None:
+                # add logs
+                return {"success": False, "msg": "Field not found, please resend!"}, HTTPStatus.NO_CONTENT
+        
+        if admin_updates is None:
+                # add logs
+                return{"success": False, "msg":"The param 'id' mismatch"}, HTTPStatus.BAD_REQUEST
+        
+        
+        if not allowed_file(file.filename):
+                # add logs 
+                return {'success': False, 'msg': 'file type not accepted'}, HTTPStatus.FORBIDDEN
+        
+        if allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                # print(filename)
+                file.save(os.path.join(current_app.config['UPLOAD_PICTURE'], filename))
+
+
+        filename = secure_filename(file.filename)
+        admin_updates.profile = filename
+
+        db.session.commit()
+
+        return {
+             "success": True,
+             "msg": "Profile picture successfully uploads"
+        }, HTTPStatus.ACCEPTED   
+
+
+    def get(self, admin_id):
+        '''Get current admin profile'''
+
+        filename = Admin.query.filter_by(id=admin_id).first()
+        directory = os.path.join(current_app.config['UPLOAD_PICTURE'])
+        # return send_file(filename.profile, mimetype='image/jpeg')
+        # return send_from_directory(directory, filename.profile, as_attachment=False), HTTPStatus.OK
+        image_url = url_for('static', filename=f'profile/{filename.profile}', _external=True)
+        return {'image_url': image_url}, HTTPStatus.OK
+
+
+
+
+# @admin_ns.route('v1/<admin_id>/profile_picture')
+# class UpdateAdminProfilePhoto(Resource):
+#     ''' Logout resource route'''
+
+    
 
 
 

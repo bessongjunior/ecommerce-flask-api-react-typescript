@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 UPLOAD_FOLDER = BASE_DIR+'/static/uploads'
+UPLOAD_PICTURE = BASE_DIR+'/static/profile'
 
 class BaseConfig():
     '''Carries our basic configuration of the platform'''
@@ -26,6 +27,8 @@ class BaseConfig():
     MAIL_DEFAULT_SENDER = os.environ.get('EMAIL_USER')
     MAIL_PASSWORD = os.environ.get('EMAIL_PASS')
     UPLOAD_FOLDER = UPLOAD_FOLDER
+    UPLOAD_PICTURE = UPLOAD_PICTURE
+    USE_X_SENDFILE = True
     MAX_CONTENT_LENGTH = 6 * 1000 * 1000
 
 
